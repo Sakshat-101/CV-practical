@@ -1,0 +1,30 @@
+% Read an image
+img = imread('peppers.png'); % Replace 'peppers.png' with your image file
+
+% Convert the image to grayscale if it is a color image
+if size(img, 3) == 3
+    grayImg = rgb2gray(img);
+else
+    grayImg = img;
+end
+
+% Extract HOG features and visualization
+% 'CellSize' defines the size of the cells (e.g., [8 8] pixels)
+% 'NumBins' defines the number of orientation bins (e.g., 9)
+[hogFeatures, hogVisualization] = extractHOGFeatures(grayImg, ...
+    'CellSize', [8 8], 'NumBins', 9);
+
+% Display the original image and the HOG visualization
+figure;
+subplot(1, 2, 1);
+imshow(img);
+title('Original Image');
+
+subplot(1, 2, 2);
+imshow(img);
+hold on;
+plot(hogVisualization); % Overlay HOG visualization on the image
+title('HOG Features Visualization');
+
+% Display the size of the extracted HOG feature vector
+fprintf('Size of HOG feature vector: %d\n', numel(hogFeatures));
