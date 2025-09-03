@@ -1,0 +1,44 @@
+clc; clear; close all;
+
+% Read input image
+img = imread('pears.png');
+
+% Convert to grayscale if needed
+if size(img, 3) == 3
+    grayImg = rgb2gray(img);
+else
+    grayImg = img;
+end
+
+% --- Detect features (SIFT if available, otherwise SURF) ---
+if exist('detectSIFTFeatures', 'file')
+    disp('Using SIFT Features...');
+    points = detectSIFTFeatures(grayImg);
+else
+    disp('SIFT not available. Using SURF Features...');
+    points = detectSURFFeatures(grayImg);
+end
+
+% Extract descriptors
+[features, validPoints] = extractFeatures(grayImg, points);
+
+% --- Visualization ---
+figure;
+
+% Original image
+subplot(1, 2, 1);
+imshow(img); hold on;
+plot(validPoints.selectStrongest(50), 'showOrientation', true);
+title('Original Image with Strongest Feature Points');
+hold off;
+
+% Grayscale image
+subplot(1, 2, 2);
+imshow(grayImg); hold on;
+plot(points.selectStrongest(50));
+title('Grayscale Image with Features');
+hold off;
+
+% --- Display first point info ---
+disp('Information about the first detected feature point:');
+disp(validPoints(1));
